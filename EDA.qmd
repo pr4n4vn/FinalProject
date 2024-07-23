@@ -6,7 +6,7 @@ editor: visual
 
 ### Introduction
 
-In this document, we will do exploratory data analysis of our data set. This data set shows health indicators that could show diabetes.  
+In this document, we will do exploratory data analysis of our data set. This data set shows health indicators that could show diabetes. The purpose of this is to investigate the connection between diabetes and health indicators.
 
 The first step is to run the libraries necessary.
 
@@ -15,13 +15,11 @@ library(readr)
 library(tidyverse)
 ```
 
-
+The next step is to read in the raw data as an R tibble.
 ```{r}
 diabetes_data <- read_csv("diabetes_012_health_indicators_BRFSS2015.csv", col_names = TRUE)
 str(diabetes_data)
 print(diabetes_data)
-
-
 ```
 
 We see all these variables as numeric.  However, many of them should actually be factor variables with meaningful level names.
@@ -57,4 +55,51 @@ sum(is.na(diabetes_data_fixed))
 ```
 
 No missing data!  Now we can move on to the summarizations.
+
+```{r}
+#Showing summary statistics here.
+summary(diabetes_data_fixed)
+```
+
+
+
+Now, we can move on to the visualization plots.  
+```{r}
+#Showing visualization plots
+#Distribution of diabetes status
+library(ggplot2)
+ggplot(diabetes_data_fixed, aes(x = Diabetes_012)) + 
+  geom_bar() + 
+  ggtitle("Distributions of Diabetes Status")
+```
+As shown in the graph, it looks like most of the participants (over 200,000) in the study do not have diabetes. There are approximately 35,000 people who do have diabnetes, and about 5,000 people who have prediabetes.
+
+
+```{r}
+#BMI by Diabetes
+ggplot(diabetes_data_fixed, aes(x = Diabetes_012, y = BMI)) + 
+  geom_boxplot() + 
+  ggtitle("BMI by Diabetes Status")
+```
+The IQR range of the BMI of people with diabetes is higher than the IQR range of the BMI of people without diabetes. Based off of this, it can be suggested that the BMI is higher for people with diabetes versus people who do not have diabetes.
+
+```{r}
+#Age distribution by Diabetes Status
+ggplot(diabetes_data_fixed, aes(x = Age, fill = Diabetes_012)) + 
+  geom_bar(position = "fill") + 
+  ggtitle("Age Distribution by Diabetes Status")
+
+
+```
+As shown in this stacked bar plot, the distribution looks relatively normal but skewed to the left as the age of participants increased.  This suggests that the count of people with diabetes is connected to the age of participants; as the age increased, the likelihood of diabetes also increases.
+
+
+```{r}
+#Bar plot of physical activity by Diabetes status
+ggplot(diabetes_data_fixed, aes(x = PhysActivity, fill = Diabetes_012)) +
+  geom_bar(position = "fill") + 
+  ggtitle("Physical Activity by Diabetes Status")
+```
+This stacked bar plot shows the physical activity versus the count of diabetes.  As shown, the count of diabetes is higher for people who do not participate in physical activity,  and the count of diabetes is lower for people who do participate in physical activity.
+
 
