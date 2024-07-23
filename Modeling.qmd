@@ -1,0 +1,19 @@
+---
+title: "modeling"
+format: html
+editor: visual
+---
+
+### Introduction
+This data set shows health indicators that could show diabetes. There are 22 variables and 253,680 rows of data.   The purpose of this is to investigate the connection between diabetes and health indicators.  The goal here is to create some models to predict the Diabetes_binary variable.  I will use log loss with 5 fold cross-validation to select the best model.  
+
+Log loss is a performance metric that evaluates the classification model performance by looking at the differences between predicted and actual probabilities. This metric is evaluated by a scale from 0 to 1, with 1 being that the predicted probability is right on spot with the actual probability, and 0 being there is no similarity between the predicted probability and actual probability.  Log loss also takes into account the prediction uncertainties, which is why it's better than accuracy.  With log loss on binary classifications, confident wrong predictions are detected and penalized confident wrong predictions.
+
+Firstly, however, I will need to split the data between training and test.
+```{r}
+set.seed(123)
+
+trainIndex <- create
+```
+
+
