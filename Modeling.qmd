@@ -171,7 +171,13 @@ Now I will show which is the best model
 names_models <- c("Logistic Regression", "Classification Tree", "Random Forest")
 log_losses <- c(logLoss_glm, logLoss_class, logLoss_rf)
 model_index <- which.min(log_losses)
-model <- names_models[model_index]
-print(paste("The overall best model is:", model))
+best_model <- names_models[model_index]
+print(paste("The overall best model is:", best_model))
+```
+
+From what we see here, the logistic regression model is the best model with the least log loss.  Now, let's save the best model into a file.
+
+```{r}
+saveRDS(best_model, "best_model.rds")
 ```
 
