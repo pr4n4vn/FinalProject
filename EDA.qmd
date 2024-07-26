@@ -6,7 +6,7 @@ editor: visual
 
 ### Introduction
 
-In this document, we will do exploratory data analysis of our data set. This data set shows health indicators that could show diabetes. The purpose of this is to investigate the connection between diabetes and health indicators.
+In this document, we will do exploratory data analysis of our data set.     
 
 The first step is to run the libraries necessary.
 

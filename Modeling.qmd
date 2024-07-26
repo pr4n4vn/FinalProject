@@ -122,7 +122,7 @@ class_tree <- train(Diabetes_binary ~ .,
                     method = "rpart", 
                     trControl = train_control, 
                     metric = "logLoss", 
-                    tuneLength = 10)
+                    tuneGrid = expand.grid(cp = seq(from = 0, to = 0.1, by = 0.001)))
 ```
 
 
@@ -134,11 +134,44 @@ set.seed(123)
 train_control_randomforest <- trainControl(method = "cv", number = 3, summaryFunction = mnLogLoss, classProbs = TRUE)
 random_forest <- train(Diabetes_binary ~., 
                     data = Train_data,
-                    method = "rf",
+                    method = "ranger",
                     trControl = train_control_randomforest,
                     metric = "logLoss",
-                    tuneGrid = data.frame(mtry = 1:5))
+                    tuneLength = 3)
+
+```
+
+```{r}
+print(class_tree$bestTune)
+print(random_forest$bestTune)
+```
+
+Final Model Selection - Here, we will determine which model is the best model.
+```{r}
+glm_predictions <- predict(best_glm, Test_data, type = "prob")
+tree_predictions <- predict(class_tree, Test_data, type = "prob")
+randomforest_predictions <- predict(random_forest, Test_data, type = "prob")
 
 
+```
+
+Calculate and print log loss on each model with the test data set.
+```{r}
+logLoss_glm <- -mean(log(glm_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
+logLoss_class <- -mean(log(tree_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
+logLoss_rf <- -mean(log(randomforest_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
+
+print(paste("Log loss for logistic regression:", logLoss_glm))
+print(paste("Log loss for classification tree:", logLoss_class))
+print(paste("Log loss for random forest:", logLoss_rf))
+```
+
+Now I will show which is the best model
+```{r}
+names_models <- c("Logistic Regression", "Classification Tree", "Random Forest")
+log_losses <- c(logLoss_glm, logLoss_class, logLoss_rf)
+model_index <- which.min(log_losses)
+model <- names_models[model_index]
+print(paste("The overall best model is:", model))
 ```
 
