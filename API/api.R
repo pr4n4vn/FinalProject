@@ -49,7 +49,15 @@ default_values <- list(
   Age = "45-49"
 )
 
+#* @apiTitle Diabetes Prediction API
 
+#* Predict diabetes probability
+#* @param BMI Numeric, Body Mass Index
+#* @param HighBP Character, "Yes" or "No" for high blood pressure
+#* @param HighChol Character, "Yes" or "No" for high cholesterol
+#* @param Smoker Character, "Yes" or "No" for smoking status
+#* @param Age Character, Age group
+#* @post /pred
 #Now to start the function that takes in any predictor variables as the input.
 function(BMI = default_values$BMI, HighBP = default_values$HighBP, HighChol = default_values$HighChol, Smoker = default_values$Smoker, Age = default_values$Age){
   input_data <- data.frame(
@@ -65,6 +73,8 @@ function(BMI = default_values$BMI, HighBP = default_values$HighBP, HighChol = de
     return(prediction)
 }
 
+#* API info
+#* @get /info
 function() {
   list(
     name = "Pranav Nair",
