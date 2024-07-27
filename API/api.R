@@ -58,6 +58,7 @@ default_values <- list(
 #* @param HighChol Character, "Yes" or "No" for high cholesterol
 #* @param Smoker Character, "Yes" or "No" for smoking status
 #* @param Age Character, Age group
+#* @param PhysActivity Character, "Yes" or "No"
 #* @post /pred
 #Now to start the function that takes in any predictor variables as the input.
 function(BMI = default_values$BMI, HighBP = default_values$HighBP, HighChol = default_values$HighChol, Smoker = default_values$Smoker, Age = default_values$Age){
@@ -66,12 +67,13 @@ function(BMI = default_values$BMI, HighBP = default_values$HighBP, HighChol = de
     HighBP = factor(HighBP, levels = c("No", "Yes")),
     HighChol = factor(HighChol, levels = c("No", "Yes")),
     Smoker = factor(Smoker, levels = c("No", "Yes")),
-    Age = factor(Age, levels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+"))
+    Age = factor(Age, levels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+")),
+    PhysActivity = factor(PhysActivity, levels = c("No", "Yes"))
     )
     
     prediction <- predict(best_model, input_data, type = "prob")
+    list(prediction = prediction)
     
-    return(prediction)
 }
 
 #* API info
