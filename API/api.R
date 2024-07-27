@@ -9,6 +9,7 @@
 
 library(plumber)
 library(tidyverse)
+library(caret)
 
 
 best_model <- readRDS("best_model.rds")
