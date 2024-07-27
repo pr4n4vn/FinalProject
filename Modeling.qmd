@@ -1,5 +1,5 @@
 ---
-title: "modeling"
+title: "Modeling by Pranav Nair in ST558"
 format: html
 editor: visual
 ---
