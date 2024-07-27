@@ -1,5 +1,5 @@
 ---
-title: "EDAfile by Pranav Nair in ST558"
+title: "EDAfile by Pranav Nair, ST558"
 format: html
 editor: visual
 ---
