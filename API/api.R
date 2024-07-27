@@ -10,7 +10,7 @@
 library(plumber)
 library(tidyverse)
 
-#Read in the best model 
+
 best_model <- readRDS("best_model.rds")
 
 #Load in the data
