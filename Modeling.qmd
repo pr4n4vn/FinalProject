@@ -5,11 +5,13 @@ editor: visual
 ---
 
 ### Introduction
-This data set shows health indicators that could show diabetes. There are 22 variables and 253,680 rows of data.   The purpose of this is to investigate the connection between diabetes and health indicators.  The goal here is to create some models to predict the Diabetes_binary variable.  I will use log loss with 5 fold cross-validation to select the best model.  
 
-Log loss is a performance metric that evaluates the classification model performance by looking at the differences between predicted and actual probabilities. This metric is evaluated by a scale from 0 to 1, with 1 being that the predicted probability is right on spot with the actual probability, and 0 being there is no similarity between the predicted probability and actual probability.  Log loss also takes into account the prediction uncertainties, which is why it's better than accuracy.  With log loss on binary classifications, confident wrong predictions are detected and penalized confident wrong predictions.
+This data set shows health indicators that could show diabetes. There are 22 variables and 253,680 rows of data. The purpose of this is to investigate the connection between diabetes and health indicators. The goal here is to create some models to predict the Diabetes_binary variable. I will use log loss with 5 fold cross-validation to select the best model.
 
-Firstly, however, I will need to read in the data once more.  The only difference here is that I should create a new diabetes_binary variable which is based off of the diabetes_012 variable.
+Log loss is a performance metric that evaluates the classification model performance by looking at the differences between predicted and actual probabilities. This metric is evaluated by a scale from 0 to 1, with 1 being that the predicted probability is right on spot with the actual probability, and 0 being there is no similarity between the predicted probability and actual probability. Log loss also takes into account the prediction uncertainties, which is why it's better than accuracy. With log loss on binary classifications, confident wrong predictions are detected and penalized confident wrong predictions.
+
+Firstly, however, I will need to read in the data once more. The only difference here is that I should create a new diabetes_binary variable which is based off of the diabetes_012 variable.
+
 ```{r}
 library(caret)
 library(tidyverse)
@@ -40,7 +42,6 @@ data <- data %>%
   )
 ```
 
-
 As before, I should check for missing values.
 
 ```{r}
@@ -48,11 +49,11 @@ sum(is.na(data))
 ```
 
 Now, I should remove the original diabetes_012 variable.
+
 ```{r}
 data <- data |>
   select(-Diabetes_012)
 ```
-
 
 Now I will split the data between training data set and test data set.
 
@@ -67,10 +68,10 @@ Train_data <- data[ trainIndex,]
 Test_data <- data[-trainIndex,]
 ```
 
-
-The next step is to create three models.  The models I will create are logistic regression, classification tree, and random forest. Logistic regression is a method used for binary classification, where it predicts the probability that an input belongs to a class by fitting a logistic function to the input features.  Logistic regression is useful when there is a linear relationship between the input and output.  The output of a logistic regression model is mapped from 0 to 1 which shows the likelihood of the input belonging to the positive class.
+The next step is to create three models. The models I will create are logistic regression, classification tree, and random forest. Logistic regression is a method used for binary classification, where it predicts the probability that an input belongs to a class by fitting a logistic function to the input features. Logistic regression is useful when there is a linear relationship between the input and output. The output of a logistic regression model is mapped from 0 to 1 which shows the likelihood of the input belonging to the positive class.
 
 Now, I will fit three candidate logistic regression models and choose the best one using CV with log-loss as my metric.
+
 ```{r}
 
 #First, define training control 
@@ -107,14 +108,15 @@ compareglm <- resamples(list(glm1 = model_glm1, glm2 = model_glm2, glm3 = model_
 summary(compareglm)
 
 ```
+
 Based on what I see here, glm1 is the best model as it has the lowest logLoss value.
 
 ```{r}
 best_glm <- model_glm1
 ```
 
-
 Next, I will create the classification tree model
+
 ```{r}
 set.seed(123)
 class_tree <- train(Diabetes_binary ~ ., 
@@ -124,7 +126,6 @@ class_tree <- train(Diabetes_binary ~ .,
                     metric = "logLoss", 
                     tuneGrid = expand.grid(cp = seq(from = 0, to = 0.1, by = 0.001)))
 ```
-
 
 Next, I will create the random forest model.
 
@@ -147,6 +148,7 @@ print(random_forest$bestTune)
 ```
 
 Final Model Selection - Here, we will determine which model is the best model.
+
 ```{r}
 glm_predictions <- predict(best_glm, Test_data, type = "prob")
 tree_predictions <- predict(class_tree, Test_data, type = "prob")
@@ -156,6 +158,7 @@ randomforest_predictions <- predict(random_forest, Test_data, type = "prob")
 ```
 
 Calculate and print log loss on each model with the test data set.
+
 ```{r}
 logLoss_glm <- -mean(log(glm_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
 logLoss_class <- -mean(log(tree_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
@@ -167,6 +170,7 @@ print(paste("Log loss for random forest:", logLoss_rf))
 ```
 
 Now I will show which is the best model
+
 ```{r}
 names_models <- c("Logistic Regression", "Classification Tree", "Random Forest")
 log_losses <- c(logLoss_glm, logLoss_class, logLoss_rf)
@@ -175,9 +179,8 @@ best_model <- names_models[model_index]
 print(paste("The overall best model is:", best_model))
 ```
 
-From what we see here, the logistic regression model is the best model with the least log loss.  Now, let's save the best model into a file.
+From what we see here, the logistic regression model is the best model with the least log loss. Now, let's save the best model into a file.
 
 ```{r}
 saveRDS(best_model, "best_model.rds")
 ```
-
