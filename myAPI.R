@@ -10,8 +10,8 @@
 
 # Load necessary packages
 library(plumber)
-library(tidyverse)
 library(rpart)
+library(caret)
 
 # Load the best model
 best_model <- readRDS("best_model.rds")
@@ -29,9 +29,10 @@ train_index <- sample(seq_len(nrow(data)), size = 0.7 * nrow(data))
 train_data <- data[train_index, ]
 test_data <- data[-train_index, ]
 
+train_control <- trainControl(method = "cv", number = 5, summaryFunction = mnLogLoss, classProbs = TRUE)
 
 class_tree <- train(Diabetes_binary ~ ., 
-                    data = Train_data, 
+                    data = train_data, 
                     method = "rpart", 
                     trControl = train_control, 
                     metric = "logLoss", 

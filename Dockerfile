@@ -8,6 +8,8 @@ r-cran-plumber
 
 RUN R -e "install.packages('GGally')"
 RUN R -e "install.packages('plumber')"
+RUN R -e "install.packages('caret')"
+
 
 COPY myAPI.R myAPI.R
 COPY best_model.rds best_model.rds
