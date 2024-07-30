@@ -73,18 +73,18 @@ default_values <- list(
 #* @param Smoker Character, "Yes" or "No" for smoking status
 #* @param CholCheck Character, "Yes" or "No" for cholesterol status
 #* @param Stroke Character, "Yes" or "No" for Stroke status
-#* @param HeartDiseaseorAttack Character, "Yes" or "No" for
-#* @param PhysActivity Character, "Yes" or "No" for
-#* @param Fruits Character, "Yes" or "No" for
-#* @param Veggies Character, "Yes" or "No" for
-#* @param HvyAlcoholConsump Character, "Yes" or "No" for
-#* @param AnyHealthcare Character, "Yes" or "No" for
+#* @param HeartDiseaseorAttack Character, "Yes" or "No" for disease or attack.
+#* @param PhysActivity Character, "Yes" or "No" for physical activity
+#* @param Fruits Character, "Yes" or "No" for consuming fruits
+#* @param Veggies Character, "Yes" or "No" for consuming veggies
+#* @param HvyAlcoholConsump Character, "Yes" or "No" for consuming alcohol
+#* @param AnyHealthcare Character, "Yes" or "No" for 
 #* @param NoDocbcCost Character, "Yes" or "No" for
 #* @param GenHlth Character
-#* @param MentHlth
-#* @param PhysHlth
-#* @param DiffWalk
-#* @param Sex Character, "Female" or "Male" for
+#* @param MentHlth Numeric, number of days that required mental health check
+#* @param PhysHlth Numeric, number of days that required physical health check
+#* @param DiffWalk Character
+#* @param Sex Character, "Female" or "Male"
 #* @param Age Character, Age group
 #* @param Education Character, Education level
 #* @param Income Character, Income bracket
