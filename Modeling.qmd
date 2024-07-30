@@ -17,6 +17,8 @@ library(caret)
 library(tidyverse)
 library(e1071)
 library(readr)
+library(randomForest)
+
 
 data <- read_csv("diabetes_012_health_indicators_BRFSS2015.csv")
 
@@ -34,12 +36,16 @@ data <- data %>%
          HvyAlcoholConsump = factor(HvyAlcoholConsump, levels = c(0, 1), labels = c("No", "Yes")),
          AnyHealthcare = factor(AnyHealthcare, levels = c(0, 1), labels = c("No", "Yes")),
          NoDocbcCost = factor(NoDocbcCost, levels = c(0, 1), labels = c("No", "Yes")),
+         MentHlth = as.numeric(MentHlth),
+         PhysHlth = as.numeric(PhysHlth),
+         GenHlth = factor(GenHlth, levels = 1:5, labels = c("Excellent", "Very Good", "Good", "Fair", "Poor")),
          DiffWalk = factor(DiffWalk, levels = c(0, 1), labels = c("No", "Yes")),
          Sex = factor(Sex, levels = c(0, 1), labels = c("Female", "Male")),
          Age = factor(Age, levels = 1:13, labels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+")),
          Education = factor(Education, levels = 1:6, labels = c("No Schooling", "Elementary", "Some High School", "High School Grad", "Some College", "College Grad")),
          Income = factor(Income, levels = 1:8, labels = c("<$10,000", "$10,000-$15,000", "$15,000-$20,000", "$20,000-$25,000", "$25,000-$35,000", "$35,000-$50,000", "$50,000-$75,000", ">$75,000"))
   )
+
 ```
 
 As before, I should check for missing values.
@@ -66,6 +72,11 @@ trainIndex <- createDataPartition(data$Diabetes_binary, p = 0.7,
 
 Train_data <- data[ trainIndex,]
 Test_data <- data[-trainIndex,]
+
+
+logLoss <- function(pred, obs) {
+  -mean(ifelse(obs == 1, log(pred), log(1 - pred)))
+}
 ```
 
 The next step is to create three models. The models I will create are logistic regression, classification tree, and random forest. Logistic regression is a method used for binary classification, where it predicts the probability that an input belongs to a class by fitting a logistic function to the input features. Logistic regression is useful when there is a linear relationship between the input and output. The output of a logistic regression model is mapped from 0 to 1 which shows the likelihood of the input belonging to the positive class.
@@ -150,9 +161,9 @@ print(random_forest$bestTune)
 Final Model Selection - Here, we will determine which model is the best model.
 
 ```{r}
-glm_predictions <- predict(best_glm, Test_data, type = "prob")
-tree_predictions <- predict(class_tree, Test_data, type = "prob")
-randomforest_predictions <- predict(random_forest, Test_data, type = "prob")
+glm_predictions <- predict(best_glm, Test_data, type = "prob")[,2]
+tree_predictions <- predict(class_tree, Test_data, type = "prob")[,2]
+randomforest_predictions <- predict(random_forest, Test_data, type = "prob")[,2]
 
 
 ```
@@ -163,6 +174,10 @@ Calculate and print log loss on each model with the test data set.
 logLoss_glm <- -mean(log(glm_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
 logLoss_class <- -mean(log(tree_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
 logLoss_rf <- -mean(log(randomforest_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
+
+glm_logLoss <- logLoss(glm_predictions, as.numeric(as.character(Test_data$Diabetes_binary)))
+tree_logLoss <- logLoss(tree_predictions, as.numeric(as.character(Test_data$Diabetes_binary)))
+rf_logLoss <- logLoss(randomforest_predictions, as.numeric(as.character(Test_data$Diabetes_binary)))
 
 print(paste("Log loss for logistic regression:", logLoss_glm))
 print(paste("Log loss for classification tree:", logLoss_class))
@@ -177,10 +192,14 @@ log_losses <- c(logLoss_glm, logLoss_class, logLoss_rf)
 model_index <- which.min(log_losses)
 best_model <- names_models[model_index]
 print(paste("The overall best model is:", best_model))
+
+model_best <- class_tree
+
+# model_best <- ifelse(logLoss_glm < logLoss_class & logLoss_glm < logLoss_rf, model_glm, ifelse(log_loss_tree < log_loss_rf, model_tree, model_rf))
 ```
 
 From what we see here, the logistic regression model is the best model with the least log loss. Now, let's save the best model into a file.
 
 ```{r}
-saveRDS(best_model, "best_model.rds")
+saveRDS(model_best, "best_model.rds")
 ```
