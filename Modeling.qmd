@@ -175,10 +175,6 @@ logLoss_glm <- -mean(log(glm_predictions[cbind(1:nrow(Test_data), as.numeric(Tes
 logLoss_class <- -mean(log(tree_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
 logLoss_rf <- -mean(log(randomforest_predictions[cbind(1:nrow(Test_data), as.numeric(Test_data$Diabetes_binary))]))
 
-glm_logLoss <- logLoss(glm_predictions, as.numeric(as.character(Test_data$Diabetes_binary)))
-tree_logLoss <- logLoss(tree_predictions, as.numeric(as.character(Test_data$Diabetes_binary)))
-rf_logLoss <- logLoss(randomforest_predictions, as.numeric(as.character(Test_data$Diabetes_binary)))
-
 print(paste("Log loss for logistic regression:", logLoss_glm))
 print(paste("Log loss for classification tree:", logLoss_class))
 print(paste("Log loss for random forest:", logLoss_rf))
